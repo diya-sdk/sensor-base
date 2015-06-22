@@ -1,0 +1,43 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<polymer-element name="sensor-base" attributes="selector name period">
+	<template>
+		<style>
+
+
+		</style>
+
+		<img src="{{icon(name)}}" />
+		<p>{{value}} {{unit}}</p>
+
+	</template>
+
+	<script>
+		Polymer({
+
+			period: 30000,
+
+			ready: function(){
+				this.autoRefresh();
+			},
+
+			autoRefresh: function(){
+				var that = this;
+
+				if(this.selector){
+					d1(this.selector).IEQ().updateData(function(ieq){
+						var model = ieq.getDataModel();
+
+						console.log(model);
+					},
+					{
+						sampling: 1,
+						sensors: [ that.name ]
+					});
+				}
+
+				setTimeout(this.autoRefresh.bind(this), this.period);
+			}
+		})
+	</script>
+</polymer-element>

@@ -1,0 +1,22 @@
+{
+  "name": "sensor-base",
+  "version": "0.8.0",
+  "homepage": "https://github.com/partnering/sensor-base",
+  "authors": [
+    "Sylvain Mahe <sylv.mahe@gmail.com>"
+  ],
+  "description": "Polymer WebComponent for displaying DiyaOne sensor values graphically",
+  "main": "sensor-base.html",
+  "license": "LGPL v3.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "diya-sdk": "partnering/diya-sdk",
+    "polymer": "Polymer/polymer#0.5"
+  }
+}

@@ -1,15 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="sensor-base" attributes="selector name period">
+<polymer-element name="sensor-base" attributes="selector name period value label">
 	<template>
-		<style>
-
-
-		</style>
-
-		<img src="{{icon(name)}}" />
-		<p>{{value}} {{unit}}</p>
-
 	</template>
 
 	<script>
@@ -21,23 +13,41 @@
 				this.autoRefresh();
 			},
 
+			icon: function(){
+
+
+			},
 			autoRefresh: function(){
 				var that = this;
 
 				if(this.selector){
-					d1(this.selector).IEQ().updateData(function(ieq){
-						var model = ieq.getDataModel();
 
-						console.log(model);
+					//request last value for the specified sensor
+					d1(this.selector).IEQ().updateData(function(ieq){
+						that.updateModel(ieq.getDataModel());
 					},
+					// Config data request
 					{
 						sampling: 1,
 						sensors: [ that.name ]
 					});
 				}
 
-				setTimeout(this.autoRefresh.bind(this), this.period);
+				//request again in the specified period
+				setTimeout(this.autoRefresh.bind(this), parseInt(this.period));
+			},
+
+			updateModel: function(model){
+				var data = model[this.name];
+				if(!data) return ;
+
+				this.unit = data.unit;
+				this.value = data.data[0].toFixed(2);
+				this.min = data.range[0];
+				this.max = data.range[1];
 			}
+
+
 		})
 	</script>
 </polymer-element>

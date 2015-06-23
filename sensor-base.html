@@ -23,8 +23,8 @@
 				if(this.selector){
 
 					//request last value for the specified sensor
-					d1(this.selector).IEQ().updateData(function(ieq){
-						that.updateModel(ieq.getDataModel());
+					d1(this.selector).IEQ().updateData(function(model){
+						that.updateModel(model);
 					},
 					// Config data request
 					{

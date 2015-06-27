@@ -38,15 +38,30 @@
 			},
 
 			updateModel: function(model){
+				if(!model) return ;
+
 				var data = model[this.name];
-				var maxQualityIndex = model[this.name].qualityConfig.indexRange;
-				if(!data) return ;
+				if(!data ||
+					!Array.isArray(data.data) ||
+					isNaN(data.data[0]) ||
+					!data.qualityConfig ||
+					!Array.isArray(data.range) ||
+					isNaN(data.range[0]) ||
+					isNaN(data.range[1]) ){
+					return ;
+				}
+
+
+				if(!isNaN(data.qualityConfig.indexRange)){
+					var maxQualityIndex = data.qualityConfig.indexRange;
+					this.quality = data.qualityIndex[0]/maxQualityIndex;
+				}
+
 
 				this.unit = data.unit;
 				this.value = data.data[0].toFixed(2);
 				this.min = data.range[0];
 				this.max = data.range[1];
-				this.quality = data.qualityIndex[0]/maxQualityIndex;
 
 			}
 

@@ -1,69 +1,57 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="sensor-base" attributes="selector name period value label">
-	<template>
+<dom-module id="sensor-base">
+  <template>
 	</template>
-
-	<script>
-		Polymer({
-
-			period: 30000,
-
-			ready: function(){
-				this.autoRefresh();
-			},
-
-			icon: function(){
-
-
-			},
-			autoRefresh: function(){
-				var that = this;
-
-				if(this.selector){
-
-					//request last value for the specified sensor
-					d1(this.selector).IEQ().updateData(function(model){
-						that.updateModel(model);
-					},
-					// Config data request
-					{
-						sampling: 1,
-						sensors: [ that.name ]
-					});
-				}
-
-				//request again in the specified period
-				setTimeout(this.autoRefresh.bind(this), parseInt(this.period));
-			},
-
-			updateModel: function(model){
-				if(!model) return ;
-
-				var data = model[this.name];
-				if(!data ||
-					!Array.isArray(data.data) ||
-					isNaN(data.data[0]) ||
-					!data.qualityConfig ||
-					!Array.isArray(data.range) ||
-					isNaN(data.range[0]) ||
-					isNaN(data.range[1]) ){
-					return ;
-				}
-
-
-				if(!isNaN(data.qualityConfig.indexRange)){
-					this.quality = data.qualityIndex[0];
-				}
-
-
-				this.unit = data.unit;
-				this.value = data.data[0].toFixed(2);
-				this.min = data.range[0];
-				this.max = data.range[1];
-			}
-
-
-		})
-	</script>
-</polymer-element>
+  <script>
+    Polymer({
+      is: 'sensor-base',
+      properties: {
+        label: { notify: true },
+        name: { notify: true },
+        period: {
+          type: Number,
+          value: 30000,
+          notify: true
+        },
+        selector: { notify: true },
+        value: { notify: true }
+      },
+      ready: function () {
+        this.autoRefresh();
+      },
+      icon: function () {
+      },
+      autoRefresh: function () {
+        var that = this;
+        if (this.selector) {
+          //request last value for the specified sensor
+          d1(this.selector).IEQ().updateData(function (model) {
+            that.updateModel(model);
+          }, // Config data request
+          {
+            sampling: 1,
+            sensors: [that.name]
+          });
+        }
+        //request again in the specified period
+        setTimeout(this.autoRefresh.bind(this), parseInt(this.period));
+      },
+      updateModel: function (model) {
+        if (!model)
+          return;
+        var data = model[this.name];
+        if (!data || !Array.isArray(data.data) || isNaN(data.data[0]) || !data.qualityConfig || !Array.isArray(data.range) || isNaN(data.range[0]) || isNaN(data.range[1])) {
+          return;
+        }
+        if (!isNaN(data.qualityConfig.indexRange)) {
+          this.quality = data.qualityIndex[0];
+        }
+        this.unit = data.unit;
+        this.value = data.data[0].toFixed(2);
+        this.min = data.range[0];
+        this.max = data.range[1];
+      }
+    });
+  </script>
+</dom-module>

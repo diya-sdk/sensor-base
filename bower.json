@@ -17,6 +17,6 @@
   ],
   "dependencies": {
     "diya-sdk": "partnering/diya-sdk",
-    "polymer": "Polymer/polymer#0.5"
+    "polymer": "Polymer/polymer#~1.1.5"
   }
 }

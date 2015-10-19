@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "diya-sdk": "partnering/diya-sdk",
+    "diya-sdk": "partnering/diya-sdk#master",
     "polymer": "Polymer/polymer#~1.1.5"
   }
 }

@@ -14,7 +14,17 @@
 		  selector: { notify: true },
 		  value: { notify: true },
 		  min: { notify: true },
-		  max: { notify: true }
+		  max: { notify: true },
+		  resolution: {
+			  type: Number,
+			  value: 1,
+			  notify: true
+		  },
+		  precision: {
+			  type: Number,
+			  value: 0,
+			  notify: true
+		  }
 	  },
 	  ready: function () {
 		  this.autoRefresh();
@@ -48,7 +58,11 @@
 		  this.unit = data.unit;
 		  this.min = data.range[0];
 		  this.max = data.range[1];
-		  this.value = data.data[0].toFixed(2);
+		  var val = data.data[0];;
+		  if(this.resolution>0)
+			  val = Math.round(val/this.resolution)*this.resolution;
+		  this.value = val.toFixed(this.precision);
+//		  this.value = val.toString();
 	  }
   };
 </script>

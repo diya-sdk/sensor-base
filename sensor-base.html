@@ -36,9 +36,17 @@
 		  if (this.selector) {
 			  //request last value for the specified sensor
 			  d1(this.selector).IEQ().updateData(function (model) {
+				  //console.log('sensorBase');
+				  //console.log(model);
 				  that.updateModel(model);
 			  }, { // Config data request
+				  criteria: {
+					  time: {
+						  range: 15
+					  }
+				  },
 				  sampling: 1,
+				  operator: 'avg',
 				  sensors: [that.name]
 			  });
 		  }

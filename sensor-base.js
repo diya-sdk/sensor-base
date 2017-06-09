@@ -41,7 +41,7 @@ DiyaBehaviors.SensorBase = {
 		this.min = data.range[0];
 		this.max = data.range[1];
 		var val = data.avg.d[0];
-		this.resolution = this.resolution || data.precision;
+		this.resolution = data.precision || this.resolution;
 		if(this.resolution>0)
 			val = Math.round(val/this.resolution)*this.resolution;
 		var precision = -Math.ceil(Math.log10(this.resolution));

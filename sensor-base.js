@@ -19,13 +19,17 @@ DiyaBehaviors.SensorBase = {
 		databind: { // data binding between sensors, fill with data from d1.IEQ().watch()
 			notify: true,
 			observer : 'onDataChanged'
-		}
+		},
 	},
 	ready: function () {
 	},
+	attached: function () {
+		// initialize label if possible
+		this.label = this.label || (LANG && LANG[this.name.toLowerCase()+"_label"]);
+	},
 	icon: function () {
 	},
-	onDataChanged: function() {
+	onDataChanged: function () {
 		if(!this.databind)
 			return;
 

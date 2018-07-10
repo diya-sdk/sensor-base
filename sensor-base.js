@@ -44,7 +44,83 @@ DiyaBehaviors.SensorBase = {
 		this.unit = data.unit;
 		this.min = data.range[0];
 		this.max = data.range[1];
-		var val = data.avg.d[0];
+
+		//console.log(this.name);
+		//console.log(data.avg.d);
+		//console.log(data);
+
+		let lim = 0;
+		if (this.name === "Temperature")
+			lim = -2;
+		if (this.name === "Humidity")
+			lim = 4;
+
+		var i = 0;
+		var arrValue = null;
+		var val = 0;
+		if (data.robotId === null) {
+			data.avg.d.forEach((el) => {
+				if (el === lim)
+					return ;
+				i++;
+				val += el;
+			});
+		}
+		else {
+			arrValue = {};
+			for (var j = 0; j < data.robotId.length; j++) {
+				let robotId = data.robotId[j];
+				if (!arrValue.hasOwnProperty(robotId)) {
+					arrValue[robotId] = {
+						"value": data.avg.d[j],
+						"fake": (data.avg.d[j] === lim) ? true : false,
+						"time": data.time[j]
+					};
+				}
+				else if (arrValue[robotId].fake === true && (data.avg.d[j] !== lim)) {
+					arrValue[robotId] = {
+						"value": data.avg.d[j],
+						"fake": false,
+						"time": data.time[j]
+					};
+				}
+				else if ((data.avg.d[j] !== lim) && arrValue[robotId].time > data.time[j]) {
+					arrValue[robotId] = {
+						"value": data.avg.d[j],
+						"fake": false,
+						"time": data.time[j]
+					};
+				}
+			}
+			var lenObj = 0;
+			var lenFake = 0;
+			for(key in arrValue) {
+				if (arrValue[key].fake === true) {
+					lenFake++;
+				}
+				lenObj++;
+			}
+			for(key in arrValue) {
+				if (lenObj > lenFake) {
+					if (arrValue[key].value != lim) {
+						val += arrValue[key].value;
+						i++;
+					}
+				}
+				else {
+					val += arrValue[key].value;
+					i++;
+				}
+				//console.log(arrValue[key]);
+			}
+			//console.log(arrValue);
+//			//console.log("checking for " + el)
+
+		}
+		if (i !== 0)
+			val /= i;
+		//console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[RESULT = ", val, "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
+//		var val = data.avg.d[0];
 		this.resolution = data.precision || this.resolution;
 		if(this.resolution>0)
 			val = Math.round(val/this.resolution)*this.resolution;

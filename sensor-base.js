@@ -46,6 +46,7 @@ DiyaBehaviors.SensorBase = {
 		this.max = data.range[1];
 		var val;
 
+		/* Boolean decide if the average is done or not */
 		if (this.wantRealAverage === undefined || this.wantRealAverage === null || this.wantRealAverage === false) {
 			val = data.avg.d[0];
 			this.resolution = data.precision || this.resolution;
@@ -59,17 +60,17 @@ DiyaBehaviors.SensorBase = {
 			return ;
 		}
 
-		let lim = 0;
+		let offset = 0; // offset setted for the sensor
 		if (this.name === "Temperature")
-			lim = -2;
+			offset = -2;
 		if (this.name === "Humidity")
-			lim = 4;
+			offset = 4;
 		var i = 0;
 		var arrValue = null;
 		val = 0;
 		if (data.robotId === null) {
 			data.avg.d.forEach((el) => {
-				if (el === lim)
+				if (el === offset)
 					return ;
 				i++;
 				val += el;
@@ -80,20 +81,21 @@ DiyaBehaviors.SensorBase = {
 			for (var j = 0; j < data.robotId.length; j++) {
 				let robotId = data.robotId[j];
 				if (!arrValue.hasOwnProperty(robotId)) {
+					// fake used to know if this is a wrong values from sensor (ie if this send the offset), so we don't want to take it in the average
 					arrValue[robotId] = {
 						"value": data.avg.d[j],
-						"fake": (data.avg.d[j] === lim) ? true : false,
+						"fake": (data.avg.d[j] === offset) ? true : false,
 						"time": data.time[j]
 					};
 				}
-				else if (arrValue[robotId].fake === true && (data.avg.d[j] !== lim)) {
+				else if (arrValue[robotId].fake === true && (data.avg.d[j] !== offset)) {
 					arrValue[robotId] = {
 						"value": data.avg.d[j],
 						"fake": false,
 						"time": data.time[j]
 					};
 				}
-				else if ((data.avg.d[j] !== lim) && arrValue[robotId].time > data.time[j]) {
+				else if ((data.avg.d[j] !== offset) && arrValue[robotId].time > data.time[j]) {
 					arrValue[robotId] = {
 						"value": data.avg.d[j],
 						"fake": false,
@@ -111,12 +113,12 @@ DiyaBehaviors.SensorBase = {
 			}
 			for(key in arrValue) {
 				if (lenObj > lenFake) {
-					if (arrValue[key].value != lim) {
+					if (arrValue[key].value != offset) {
 						val += arrValue[key].value;
 						i++;
 					}
 				}
-				else {
+				else { // if all values are wrong, it does the average with the wrong values
 					val += arrValue[key].value;
 					i++;
 				}

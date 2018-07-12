@@ -44,20 +44,29 @@ DiyaBehaviors.SensorBase = {
 		this.unit = data.unit;
 		this.min = data.range[0];
 		this.max = data.range[1];
+		var val;
 
-		//console.log(this.name);
-		//console.log(data.avg.d);
-		//console.log(data);
+		if (this.wantRealAverage === undefined || this.wantRealAverage === null || this.wantRealAverage === false) {
+			val = data.avg.d[0];
+			this.resolution = data.precision || this.resolution;
+			if(this.resolution>0)
+				val = Math.round(val/this.resolution)*this.resolution;
+			var precision = -Math.ceil(Math.log10(this.resolution));
+			precision = (precision>0?precision:0);
+			this.value = val.toFixed(precision);
+
+			this.label = this.label || (LANG && LANG[this.name.toLowerCase()+"_label"]) || data.label
+			return ;
+		}
 
 		let lim = 0;
 		if (this.name === "Temperature")
 			lim = -2;
 		if (this.name === "Humidity")
 			lim = 4;
-
 		var i = 0;
 		var arrValue = null;
-		var val = 0;
+		val = 0;
 		if (data.robotId === null) {
 			data.avg.d.forEach((el) => {
 				if (el === lim)
@@ -111,16 +120,11 @@ DiyaBehaviors.SensorBase = {
 					val += arrValue[key].value;
 					i++;
 				}
-				//console.log(arrValue[key]);
 			}
-			//console.log(arrValue);
-//			//console.log("checking for " + el)
-
 		}
 		if (i !== 0)
 			val /= i;
-		//console.log("[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[RESULT = ", val, "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
-//		var val = data.avg.d[0];
+
 		this.resolution = data.precision || this.resolution;
 		if(this.resolution>0)
 			val = Math.round(val/this.resolution)*this.resolution;

@@ -1,7 +1,7 @@
 {
   "name": "sensor-base",
   "version": "1.0.2",
-  "homepage": "https://github.com/partnering/sensor-base",
+  "homepage": "https://github.com/diya-sdk/sensor-base",
   "authors": [
     "Sylvain Mahe <sylv.mahe@gmail.com>"
   ],
@@ -16,7 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "diya-sdk": "partnering/diya-sdk#master",
+    "diya-sdk": "diya-sdk/diya-sdk#master",
     "polymer": "Polymer/polymer#~1.1.5"
   }
 }

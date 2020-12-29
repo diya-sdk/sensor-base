@@ -29,6 +29,26 @@ DiyaBehaviors.SensorBase = {
 	},
 	icon: function () {
 	},
+	_computeQuality: function (comfortRange, value) {
+		try {
+			if (comfortRange[0] == 0.5 && comfortRange[1] == 1.) {
+				comfortRange = [
+					[0.875, 1],
+					[0.625, 0.875],
+					[0.375, 0.625],
+					[0.125, 0.375],
+					]
+			}
+			const numberOfComfortRange = comfortRange.length
+			const matchingComfortRangeIndex = comfortRange.findIndex((el) => {
+				return (el[0] <= value && el[1] >= value)
+			})
+			return (numberOfComfortRange - matchingComfortRangeIndex) / numberOfComfortRange
+		} catch (error) {
+			return 1
+		}
+		return 1
+	},
 	onDataChanged: function () {
 		if(!this.databind)
 			return;
@@ -57,6 +77,8 @@ DiyaBehaviors.SensorBase = {
 			this.value = val.toFixed(precision);
 
 			this.label = this.label || (LANG && LANG[this.name.toLowerCase()+"_label"]) || data.label
+
+			this.quality = this._computeQuality(data.confortRange, this.value)
 			return ;
 		}
 
@@ -133,6 +155,8 @@ DiyaBehaviors.SensorBase = {
 		var precision = -Math.ceil(Math.log10(this.resolution));
 		precision = (precision>0?precision:0);
 		this.value = val.toFixed(precision);
+
+		this.quality = this._computeQuality(data.confortRange, val)
 
 		this.label = this.label || (LANG && LANG[this.name.toLowerCase()+"_label"]) || data.label;
 	}
